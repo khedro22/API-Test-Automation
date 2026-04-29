@@ -1,4 +1,5 @@
 import io.restassured.response.Response;
+import models.responsemodels.ErrorResponseModel;
 import models.responsemodels.SingleProduct;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -47,5 +48,7 @@ public class ProductsTests {
     {   Response response = getProduct("/0");
         Assert.assertEquals(response.getStatusCode(), 400, "status code is wrong");
         response.prettyPrint();
+        ErrorResponseModel errorResponseModel = response.as(ErrorResponseModel.class);
+        Assert.assertEquals(errorResponseModel.message, "Product not found", "error message is wrong");
      }
 }
