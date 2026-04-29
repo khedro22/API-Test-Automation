@@ -3,6 +3,8 @@ import models.responsemodels.SingleCategory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
 import static utils.CategoriesUtilits.*;
 
@@ -23,7 +25,10 @@ public class CategoriesTests {
     {
         Response response = getAllCategories();
         Assert.assertEquals(response.statusCode(), 200, "Status is not correct");
-        response.prettyPrint();
+        List<SingleCategory> categories = response.jsonPath().getList("", SingleCategory.class);
+        Assert.assertEquals(categories.get(0).id, 1, "id is not correct");
+
+        //response.prettyPrint();
     }
 
     @Test
