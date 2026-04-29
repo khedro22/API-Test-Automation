@@ -15,10 +15,6 @@ import static utils.ProductsUtilits.getAllProducts;
 import static utils.ProductsUtilits.getProduct;
 
 public class ProductsTests {
-
-    String baseUrl = "https://api.escuelajs.co/api/v1";
-    String endPoint = "Products";
-
     @Test
     public void getProducts()
     {
@@ -29,13 +25,14 @@ public class ProductsTests {
         softAssert.assertAll();
         List<SingleProduct> products = response.jsonPath().getList("", SingleProduct.class);
         System.out.println(products.get(0).price);
+        response.prettyPrint();
     }
 
     @Test
     public void getSingleProduct()
     {
         //SoftAssert softAssert = new SoftAssert();
-        Response response = getProduct("/224");
+        Response response = getProduct("313");
         response.prettyPrint();
         SingleProduct singleProduct = response.as(SingleProduct.class);
         System.out.println(singleProduct.price);
@@ -45,7 +42,7 @@ public class ProductsTests {
 
      @Test
     public void getInvalidProduct()
-    {   Response response = getProduct("/0");
+    {   Response response = getProduct("0");
         Assert.assertEquals(response.getStatusCode(), 400, "status code is wrong");
         response.prettyPrint();
         ErrorResponseModel errorResponseModel = response.as(ErrorResponseModel.class);

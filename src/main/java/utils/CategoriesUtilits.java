@@ -10,7 +10,7 @@ public class CategoriesUtilits {
         return given()
                 .log()
                 .all()
-                .baseUri(Constants.BASE_URL).when().get(Constants.CATEGORY_END_POINT + id);
+                .baseUri(Constants.BASE_URL).when().get(Constants.CATEGORY_END_POINT +"/"+ id);
     }
     public static Response getAllCategories()
     {

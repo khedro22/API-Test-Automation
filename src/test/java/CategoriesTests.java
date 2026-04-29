@@ -14,7 +14,7 @@ public class CategoriesTests {
     @Test
     public void getOneCategory()
     {
-        Response response = getCategory("/1");
+        Response response = getCategory("1");
         response.then().statusCode(200);
         SingleCategory singleCategory = response.as(SingleCategory.class);
         Assert.assertEquals(singleCategory.id, 1, "id is not correct");
@@ -34,7 +34,7 @@ public class CategoriesTests {
     @Test
     public void getInvalidCategory()
     {
-        Response response = getCategory("/0");
+        Response response = getCategory("0");
         Assert.assertEquals(response.statusCode(), 400, "Status is not correct");
     }
 }

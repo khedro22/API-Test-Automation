@@ -10,7 +10,7 @@ public class ProductsUtilits {
         return given()
                 .log()
                 .all()
-                .baseUri(Constants.BASE_URL).when().get(Constants.PRODUCT_END_POINT + id);
+                .baseUri(Constants.BASE_URL).when().get(Constants.PRODUCT_END_POINT+"/" + id);
     }
     public static Response getAllProducts()
     {
