@@ -1,4 +1,5 @@
 import io.restassured.response.Response;
+import models.responsemodels.SingleCategory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -13,6 +14,8 @@ public class CategoriesTests {
     {
         Response response = getCategory("/1");
         response.then().statusCode(200);
+        SingleCategory singleCategory = response.as(SingleCategory.class);
+        Assert.assertEquals(singleCategory.id, 1, "id is not correct");
     }
     // this test case 2
     @Test
