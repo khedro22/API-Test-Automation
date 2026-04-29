@@ -7,6 +7,8 @@ import utils.CategoriesUtilits;
 import utils.Constants;
 import utils.ProductsUtilits;
 
+import java.util.List;
+
 import static io.restassured.RestAssured.*;
 import static utils.ProductsUtilits.getAllProducts;
 import static utils.ProductsUtilits.getProduct;
@@ -24,7 +26,8 @@ public class ProductsTests {
         Assert.assertEquals(response.getStatusCode(), 200, "status code is wrong");//status code is hard assertion because if there is a problem with status code then the problem will be the same to all assertions
         softAssert.assertNotNull(response.jsonPath().getInt("[0].price"), "price is not found"); //soft assertion
         softAssert.assertAll();
-        response.prettyPrint();
+        List<SingleProduct> products = response.jsonPath().getList("", SingleProduct.class);
+        System.out.println(products.get(0).price);
     }
 
     @Test
@@ -41,7 +44,7 @@ public class ProductsTests {
 
      @Test
     public void getInvalidProduct()
-    {        Response response = getProduct("/0");
+    {   Response response = getProduct("/0");
         Assert.assertEquals(response.getStatusCode(), 400, "status code is wrong");
         response.prettyPrint();
      }
