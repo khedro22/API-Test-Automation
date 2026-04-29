@@ -23,6 +23,7 @@ public class CategoriesTests {
     {
         Response response = getAllCategories();
         Assert.assertEquals(response.statusCode(), 200, "Status is not correct");
+        response.prettyPrint();
     }
 
     @Test
