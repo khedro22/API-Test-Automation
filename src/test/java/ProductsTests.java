@@ -38,4 +38,11 @@ public class ProductsTests {
         System.out.println(singleProduct.title);
 
     }
+
+     @Test
+    public void getInvalidProduct()
+    {        Response response = getProduct("/0");
+        Assert.assertEquals(response.getStatusCode(), 400, "status code is wrong");
+        response.prettyPrint();
+     }
 }
