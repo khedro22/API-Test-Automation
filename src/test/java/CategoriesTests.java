@@ -14,7 +14,7 @@ public class CategoriesTests {
         Response response = getCategory("/1");
         response.then().statusCode(200);
     }
-
+    // this test case 2
     @Test
     public void getCategories()
     {
