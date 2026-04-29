@@ -32,7 +32,7 @@ public class ProductsTests {
     public void getSingleProduct()
     {
         //SoftAssert softAssert = new SoftAssert();
-        Response response = getProduct("313");
+        Response response = getProduct("2");
         response.prettyPrint();
         SingleProduct singleProduct = response.as(SingleProduct.class);
         System.out.println(singleProduct.price);
