@@ -7,7 +7,7 @@ import static utils.CategoriesUtilits.*;
 
 public class CategoriesTests {
 
-
+    // this is test case 1
     @Test
     public void getOneCategory()
     {
