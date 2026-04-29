@@ -13,7 +13,7 @@ public class ApiRequests {
                 .all()
                 .baseUri(Constants.BASE_URL).when().get(endPoint);
     }
-        //get one product
+    //get one product using overloading method
     public static Response get(String endPoint, String id)
     {
         return given()
