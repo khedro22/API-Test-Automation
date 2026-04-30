@@ -5,6 +5,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import utils.ProductsUtilits;
+import utils.RestHelper;
+
 import java.util.List;
 import static utils.ProductsUtilits.getProduct;
 
@@ -41,5 +43,11 @@ public class ProductsTests {
         response.prettyPrint();
         ErrorResponseModel errorResponseModel = response.as(ErrorResponseModel.class);
         Assert.assertEquals(errorResponseModel.message, "Product not found", "error message is wrong");
+     }
+
+     @Test
+    public void getProduct2()
+     {
+
      }
 }
