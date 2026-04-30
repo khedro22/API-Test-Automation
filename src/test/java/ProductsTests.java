@@ -4,14 +4,8 @@ import models.responsemodels.SingleProduct;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
-import utils.CategoriesUtilits;
-import utils.Constants;
 import utils.ProductsUtilits;
-
 import java.util.List;
-
-import static io.restassured.RestAssured.*;
-import static utils.ProductsUtilits.getAllProducts;
 import static utils.ProductsUtilits.getProduct;
 
 public class ProductsTests {
