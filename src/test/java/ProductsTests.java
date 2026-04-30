@@ -1,53 +1,134 @@
-import io.restassured.response.Response;
+import models.requestmodels.CreateProductRequest;
 import models.responsemodels.ErrorResponseModel;
 import models.responsemodels.SingleProduct;
-import org.testng.Assert;
+import io.restassured.response.Response;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
-import utils.ProductsUtilits;
-import utils.RestHelper;
-
 import java.util.List;
-import static utils.ProductsUtilits.getProduct;
+import java.util.Random;
+
+import static utils.ProductsUtils.*;
+
 
 public class ProductsTests {
+    Random rand = new Random();
+
     @Test
-    public void getProducts()
-    {
+    public void getProductsTest(){
         SoftAssert softAssert = new SoftAssert();
-        Response response = ProductsUtilits.getAllProducts();
-        Assert.assertEquals(response.getStatusCode(), 200, "status code is wrong");//status code is hard assertion because if there is a problem with status code then the problem will be the same to all assertions
-        softAssert.assertNotNull(response.jsonPath().getInt("[0].price"), "price is not found"); //soft assertion
+        List<SingleProduct> getProductsResponseModel = getProductsList(200);
+        softAssert.assertEquals(getProductsResponseModel.get(0).price,20,"Price is not correct");
+        softAssert.assertTrue(getProductsResponseModel.get(0).category.name.contains("Clothes"), "description is not correct");
         softAssert.assertAll();
-        List<SingleProduct> products = response.jsonPath().getList("", SingleProduct.class);
-        System.out.println(products.get(0).price);
-        response.prettyPrint();
     }
 
     @Test
-    public void getSingleProduct()
-    {
-        //SoftAssert softAssert = new SoftAssert();
-        Response response = getProduct("2");
-        response.prettyPrint();
-        SingleProduct singleProduct = response.as(SingleProduct.class);
-        System.out.println(singleProduct.price);
-        System.out.println(singleProduct.title);
-
+    public void getSingleProductTest(){
+        SoftAssert softAssert = new SoftAssert();
+        SingleProduct getProductsResponseModel = getSingleProduct(200,221);
+        softAssert.assertEquals(getProductsResponseModel.price,94,"Price is not correct");
+        softAssert.assertTrue(getProductsResponseModel.category.name.contains("Clothes"), "description is not correct");
+        softAssert.assertAll();
     }
 
-     @Test
-    public void getInvalidProduct()
-    {   Response response = getProduct("0");
-        Assert.assertEquals(response.getStatusCode(), 400, "status code is wrong");
-        response.prettyPrint();
-        ErrorResponseModel errorResponseModel = response.as(ErrorResponseModel.class);
-        Assert.assertEquals(errorResponseModel.message, "Product not found", "error message is wrong");
-     }
+    @Test
+    public void getSingleInvalidProductTest(){
+        SoftAssert softAssert = new SoftAssert();
+        ErrorResponseModel errorResponseModel = getSingleInvalidProduct(400,0);
+        softAssert.assertEquals(errorResponseModel.name, "EntityNotFoundError", "invalid error message" );
+        softAssert.assertAll();
+    }
 
-     @Test
-    public void getProduct2()
-     {
+    @Test
+    public void createProductTest(){
+        SoftAssert softAssert = new SoftAssert();
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setTitle("test product");
+        createProductRequest.setPrice(100);
+        createProductRequest.setCategoryId(1);
+        createProductRequest.setDescription("test description");
+        createProductRequest.setImages(List.of("https://placeimg.com/640/480/any"));
+        SingleProduct getProductsResponseModel = createProduct(createProductRequest, 201);
+        softAssert.assertEquals(getProductsResponseModel.title, "test product", "title is not correct");
+        softAssert.assertEquals(getProductsResponseModel.price, 100, "price is not correct");
+        softAssert.assertAll();
+    }
+    @Test
+    public void getProductAfterCreation()
+    {
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setTitle("test-product"+rand.nextInt(1000));
+        createProductRequest.setPrice(100);
+        createProductRequest.setCategoryId(1);
+        createProductRequest.setDescription("test description");
+        createProductRequest.setImages(List.of("https://placeimg.com/640/480/any"));
+        SingleProduct createdProduct = createProduct(createProductRequest, 201);
+        int id = createdProduct.id;
+        SingleProduct productCreated = getSingleProduct(200, id);
+    }
 
-     }
+    @Test
+    public void createProductWithInvalidCategory()
+    {
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setTitle("test-product"+rand.nextInt(1000));
+        createProductRequest.setPrice(100);
+        createProductRequest.setCategoryId(0);
+        createProductRequest.setDescription("test description");
+        createProductRequest.setImages(List.of("https://placeimg.com/640/480/any"));
+        ErrorResponseModel error = createProductInvalid(createProductRequest, 400);
+    }
+
+    @Test
+    public void createProductWithMissingTitle()
+    {
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setPrice(100);
+        createProductRequest.setCategoryId(1);
+        createProductRequest.setDescription("test description");
+        createProductRequest.setImages(List.of("https://placeimg.com/640/480/any"));
+        ErrorResponseModel error = createProductInvalid(createProductRequest, 500);
+    }
+
+    @Test
+    public void createProductWithMissingPrice()
+    {
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setTitle("test-product"+rand.nextInt(1000));
+        createProductRequest.setCategoryId(1);
+        createProductRequest.setDescription("test description");
+        createProductRequest.setImages(List.of("https://placeimg.com/640/480/any"));
+        ErrorResponseModel error = createProductInvalid(createProductRequest, 400);}
+    @Test
+    public void createProductWithMissingCategoryId()
+    {
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setTitle("test-product"+rand.nextInt(1000));
+        createProductRequest.setPrice(100);
+        createProductRequest.setDescription("test description");
+        createProductRequest.setImages(List.of("https://placeimg.com/640/480/any"));
+        ErrorResponseModel error = createProductInvalid(createProductRequest, 400);
+    }
+
+    @Test
+    public void createProductWithMissingDescription()
+    {
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setTitle("test-product"+rand.nextInt(1000));
+        createProductRequest.setPrice(100);
+        createProductRequest.setCategoryId(1);
+        createProductRequest.setImages(List.of("https://placeimg.com/640/480/any"));
+        ErrorResponseModel error = createProductInvalid(createProductRequest, 500);
+    }
+    @Test
+    public void createProductWithMissingImages()
+    {   CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setTitle("test-product"+rand.nextInt(1000));
+        createProductRequest.setPrice(100);
+        createProductRequest.setCategoryId(1);
+        createProductRequest.setDescription("test description");
+        ErrorResponseModel error = createProductInvalid(createProductRequest, 400);}
+
+
 }
